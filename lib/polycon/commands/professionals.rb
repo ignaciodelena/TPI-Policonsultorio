@@ -1,7 +1,13 @@
 module Polycon
   module Commands
     module Professionals
+      require 'fileutils'
+      HOME = Dir.home 
+      FileUtils.mkdir_p(HOME+"/.polycon") unless  File.exists?(HOME+"/.polycon") 
+      
       class Create < Dry::CLI::Command
+        
+
         desc 'Create a professional'
 
         argument :name, required: true, desc: 'Full name of the professional'
@@ -11,8 +17,10 @@ module Polycon
           '"Ernesto Fernandez" # Creates a new professional named "Ernesto Fernandez"'
         ]
 
-        def call(name:, **)
-          warn "TODO: Implementar creación de un o una profesional con nombre '#{name}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+        def call(name:string)
+          
+          FileUtils.mkdir_p(HOME+"/.polycon/#{name}") unless  File.exists?(HOME+"/.polycon/#{name}") 
+          
         end
       end
 
@@ -27,7 +35,8 @@ module Polycon
         ]
 
         def call(name: nil)
-          warn "TODO: Implementar borrado de la o el profesional con nombre '#{name}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+          FileUtils.remove_dir(HOME+"/.polycon/#{name}") if File.directory?(HOME+"/.polycon/#{name}")
+         
         end
       end
 
@@ -39,7 +48,11 @@ module Polycon
         ]
 
         def call(*)
-          warn "TODO: Implementar listado de profesionales.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+          puts HOME
+          Dir.foreach(HOME+"/.polycon") do |item| next if item == '.' or item == '..'
+            puts item
+          end
+          
         end
       end
 
@@ -53,8 +66,9 @@ module Polycon
           '"Alna Esevez" "Alma Estevez" # Renames the professional "Alna Esevez" to "Alma Estevez"',
         ]
 
-        def call(old_name:, new_name:, **)
-          warn "TODO: Implementar renombrado de profesionales con nombre '#{old_name}' para que pase a llamarse '#{new_name}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+        def call(old_name:string, new_name:string, **)
+          File.rename HOME+"/.polycon/#{old_name}", HOME+"/.polycon/#{new_name}"
+          
         end
       end
     end
