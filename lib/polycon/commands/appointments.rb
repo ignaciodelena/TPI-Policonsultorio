@@ -1,6 +1,10 @@
 module Polycon
   module Commands
     module Appointments
+      require 'fileutils'
+      require 'date'
+      HOME = Dir.home+"/.polycon/" 
+
       class Create < Dry::CLI::Command
         desc 'Create an appointment'
 
@@ -16,7 +20,11 @@ module Polycon
         ]
 
         def call(date:, professional:, name:, surname:, phone:, notes: nil)
-          warn "TODO: Implementar creación de un turno con fecha '#{date}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+          
+          date= date.sub " ", "_"
+          date= date.sub ":", "-"
+          File.open(HOME+"#{professional}/#{date}.paf", 'w') { |fo| fo.puts "#{name}\n#{surname}\n#{phone}\n#{notes}"}
+          #warn "TODO: Implementar creación de un turno con fecha '#{date}.strftime(%Y-%m-%d_%I:%M) para el profesiona #{professional}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
         end
       end
 
@@ -31,7 +39,10 @@ module Polycon
         ]
 
         def call(date:, professional:)
-          warn "TODO: Implementar detalles de un turno con fecha '#{date}' y profesional '#{professional}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+          date= date.sub " ", "_"
+          date= date.sub ":", "-"
+          puts File.read(HOME+"#{professional}/#{date}.paf")
+          #warn "TODO: Implementar detalles de un turno con fecha '#{date}' y profesional '#{professional}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
         end
       end
 
@@ -46,7 +57,10 @@ module Polycon
         ]
 
         def call(date:, professional:)
-          warn "TODO: Implementar borrado de un turno con fecha '#{date}' y profesional '#{professional}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+          date= date.sub " ", "_"
+          date= date.sub ":", "-"
+          File.delete(HOME+"#{professional}/#{date}.paf") if File.exist?(HOME+"#{professional}/#{date}.paf")
+          #warn "TODO: Implementar borrado de un turno con fecha '#{date}' y profesional '#{professional}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
         end
       end
 
@@ -60,6 +74,12 @@ module Polycon
         ]
 
         def call(professional:)
+          files = Dir[HOME+"#{professional}/*.paf"]
+          files.each do |file_name|
+            if !File.directory? file_name
+              File.delete(file_name)
+            end
+          end
           warn "TODO: Implementar borrado de todos los turnos de la o el profesional '#{professional}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
         end
       end
@@ -76,7 +96,15 @@ module Polycon
         ]
 
         def call(professional:)
-          warn "TODO: Implementar listado de turnos de la o el profesional '#{professional}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+          files = Dir[HOME+"#{professional}/*.paf"]
+          files.each do |file_name|
+            if !File.directory? file_name
+              puts file_name.delete("^0-9-_")
+              puts File.read(file_name)
+              puts "-------------------"
+            end
+          end
+          #warn "TODO: Implementar listado de turnos de la o el profesional '#{professional}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
         end
       end
 

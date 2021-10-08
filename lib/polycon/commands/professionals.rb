@@ -35,6 +35,7 @@ module Polycon
         ]
 
         def call(name: nil)
+          
           FileUtils.remove_dir(HOME+"/.polycon/#{name}") if File.directory?(HOME+"/.polycon/#{name}")
          
         end
