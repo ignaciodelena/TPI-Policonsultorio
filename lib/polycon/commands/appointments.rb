@@ -80,7 +80,7 @@ module Polycon
               File.delete(file_name)
             end
           end
-          warn "TODO: Implementar borrado de todos los turnos de la o el profesional '#{professional}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+         # warn "TODO: Implementar borrado de todos los turnos de la o el profesional '#{professional}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
         end
       end
 
@@ -120,7 +120,12 @@ module Polycon
         ]
 
         def call(old_date:, new_date:, professional:)
-          warn "TODO: Implementar cambio de fecha de turno con fecha '#{old_date}' para que pase a ser '#{new_date}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+          old_date= old_date.sub " ", "_"
+          old_date= old_date.sub ":", "-"
+          new_date= new_date.sub " ", "_"
+          new_date= new_date.sub ":", "-"
+          File.rename(HOME+"#{professional}/#{old_date}.paf", HOME+"#{professional}/#{new_date}.paf") if File.exist?(HOME+"#{professional}/#{old_date}.paf")
+          #warn "TODO: Implementar cambio de fecha de turno con fecha '#{old_date}' para que pase a ser '#{new_date}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
         end
       end
 
@@ -141,7 +146,15 @@ module Polycon
         ]
 
         def call(date:, professional:, **options)
-          warn "TODO: Implementar modificación de un turno de la o el profesional '#{professional}' con fecha '#{date}', para cambiarle la siguiente información: #{options}.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+          date= date.sub " ", "_"
+          date= date.sub ":", "-"
+          f=File.open(HOME+"#{professional}/#{date}.paf", 'w')
+          options.each do |llave, valor|
+            f.write(valor+"\n")
+          end
+          f.close
+          #File.open(HOME+"#{professional}/#{date}.paf", 'w') { |fo| fo.puts "#{name}\n#{surname}\n#{phone}\n#{notes}"}
+          #warn "TODO: Implementar modificación de un turno de la o el profesional '#{professional}' con fecha '#{date}', para cambiarle la siguiente información: #{options}.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
         end
       end
     end
